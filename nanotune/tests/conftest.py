@@ -173,13 +173,25 @@ def db_real_pinchoff(tmp_path):
     try:
         shutil.copyfile(
             path_device_characterization,
-            os.path.join(tmp_path, "pinchoff_data.db"))
-        # nt.new_database("pinchoff_data.db", tmp_path)
-        # extract_runs_into_db(
-        #     path_device_characterization,
-        #     os.path.join(tmp_path, 'pinchoff_data.db'),
-        #     *list(range(1, 16)),
-        # )
+            os.path.join(tmp_path, "pinchoff_data.db")
+        )
+        yield
+    finally:
+        gc.collect()
+
+
+@pytest.fixture(scope="function")
+def db_dot_tuning(tmp_path):
+
+    nt_path = os.path.dirname(os.path.dirname(os.path.abspath(nt.__file__)))
+    path_device_characterization = os.path.join(
+        nt_path, 'data', 'tuning', 'dot_tuning_sequences.db')
+
+    try:
+        shutil.copyfile(
+            path_device_characterization,
+            os.path.join(tmp_path, "dot_tuning_data.db")
+        )
         yield
     finally:
         gc.collect()
